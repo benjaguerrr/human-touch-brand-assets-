@@ -97,6 +97,4 @@ Esa combinación de **cuidado personal** (la relación, el respeto por su tiempo
 
 A partir de ahora, ese mismo principio lo aplico también hacia mí mismo: en vez de simplemente decir "fui descuidado", trato de ser específico sobre qué proceso falló (la falta de una fuente única de archivos) y accionable sobre qué cambiar (la carpeta de Brand Assets), en lugar de quedarme solo en la autocrítica vaga.
 
----
 
-*Este post fue escrito como entrega final del módulo "Mentalidad de Crecimiento y Comunicación en Entornos Digitales".*
