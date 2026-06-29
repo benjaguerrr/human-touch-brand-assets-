@@ -1,112 +1,232 @@
----
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Post-mortem: error de paleta — Human Touch</title>
+<style>
+  :root {
+    --terracota: #C06B4A;
+    --oliva: #7C7A4E;
+    --crema: #F4F1E8;
+    --arena: #E3D5BC;
+    --verde-sauge: #9CAF88;
+    --texto: #2E2A24;
+    --texto-suave: #5A5448;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--crema);
+    color: var(--texto);
+    line-height: 1.7;
+  }
+  .topbar {
+    background: var(--texto);
+    color: var(--crema);
+    padding: 14px 24px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .topbar a { color: var(--arena); text-decoration: none; }
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 56px 24px 100px;
+  }
+  .eyebrow {
+    font-family: Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 12px;
+    color: var(--terracota);
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-size: 2.1rem;
+    line-height: 1.25;
+    margin: 0 0 8px;
+    color: var(--texto);
+  }
+  .meta {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    color: var(--texto-suave);
+    margin-bottom: 44px;
+    border-bottom: 1px solid var(--arena);
+    padding-bottom: 24px;
+  }
+  h2 {
+    font-size: 1.4rem;
+    color: var(--terracota);
+    margin-top: 48px;
+    border-left: 4px solid var(--verde-sauge);
+    padding-left: 14px;
+  }
+  h3 {
+    font-size: 1.1rem;
+    color: var(--oliva);
+    margin-top: 28px;
+  }
+  p { margin: 14px 0; }
+  blockquote {
+    margin: 20px 0;
+    padding: 14px 20px;
+    background: var(--arena);
+    border-left: 4px solid var(--terracota);
+    font-style: italic;
+    border-radius: 0 6px 6px 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--arena);
+  }
+  th {
+    background: var(--oliva);
+    color: var(--crema);
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 12px;
+  }
+  tr:nth-child(even) { background: #ECE7D8; }
+  ul, ol { padding-left: 22px; }
+  li { margin: 8px 0; }
+  code {
+    background: var(--arena);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+  }
+  a { color: var(--terracota); }
+  hr {
+    border: none;
+    border-top: 1px solid var(--arena);
+    margin: 48px 0 24px;
+  }
+  footer {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    color: var(--texto-suave);
+    font-style: italic;
+  }
+  .tags {
+    font-family: Helvetica, Arial, sans-serif;
+    margin-top: 10px;
+  }
+  .tags span {
+    display: inline-block;
+    background: var(--verde-sauge);
+    color: var(--crema);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-right: 6px;
+  }
+</style>
+</head>
+<body>
 
-<H1>Post-mortem: Human Touch publicó con los colores equivocados</h1>
-<p>
-**Contexto**
+<div class="topbar">Human Touch — Brand Assets &nbsp;|&nbsp; <a href="https://github.com/benjaguerrr/human-touch-brand-assets-">Ver repositorio en GitHub</a></div>
 
-Estoy a cargo del diseño y la comunidad digital del proyecto **Human Touch**, un spa ubicado en Recoleta, Buenos Aires, para el cual desarrollé toda la identidad visual: paleta de colores, tipografías y sistema de aplicaciones de marca.
+<main>
+  <div class="eyebrow">Post-mortem · Branding</div>
+  <h1>Cómo una paleta de colores vieja terminó publicada en Instagram (y qué aprendí sobre versionar archivos de marca)</h1>
+  <div class="meta">
+    16 de junio, 2026 — por Benja
+    <div class="tags">
+      <span>post-mortem</span><span>branding</span><span>diseño</span><span>control-de-versiones</span><span>feedback</span>
+    </div>
+  </div>
 
-El martes 16 de junio, después de varias rondas de ajustes, mi clienta Romina aprobó finalmente la **versión definitiva de la paleta de colores** de la marca (la llamo internamente "v3"): cinco tonos orgánicos —terracota, oliva, crema, arena y verde sauge— que reemplazaban a las versiones anteriores que habíamos estado testeando durante las semanas previas.
+  <h2>Contexto</h2>
+  <p>Estoy a cargo del diseño y la comunidad digital del proyecto <strong>Human Touch</strong>, un spa imaginario ubicado en Recoleta, Buenos Aires, para el cual desarrollé toda la identidad visual: paleta de colores, tipografías y sistema de aplicaciones de marca.</p>
+  <p>El martes 16 de junio, después de varias rondas de ajustes, mi clienta Romina aprobó finalmente la <strong>versión definitiva de la paleta de colores</strong> de la marca (la llamo internamente "v3"): cinco tonos orgánicos —terracota, oliva, crema, arena y verde sauge— que reemplazaban a las versiones anteriores que habíamos estado testeando durante las semanas previas.</p>
+  <p>Con esa aprobación en mano, ese mismo día arranqué la producción del primer lote de piezas gráficas para el feed de Instagram de la marca.</p>
 
-Con esa aprobación en mano, ese mismo día arranqué la producción del primer lote de piezas gráficas para el feed de Instagram de la marca.
+  <h2>Problema</h2>
+  <p>Para armar las piezas, abrí Illustrator y tomé los colores desde un archivo de biblioteca de swatches que tenía guardado en el escritorio de mi computadora. El problema es que <strong>ese archivo correspondía a la v1 de la paleta</strong>, una versión definida casi tres semanas antes, y no a la v3 que se había aprobado esa misma mañana.</p>
+  <p>No lo noté en el momento. Exporté las seis piezas, las programé en el calendario de contenido y se publicaron en el feed de Instagram a las 15:30, todas con la paleta de colores incorrecta.</p>
+  <p>A las 16:50, Romina me escribió por WhatsApp:</p>
+  <blockquote>"Hola, vi las piezas pero los colores no son los que aprobamos esta mañana, ¿qué pasó?"</blockquote>
+  <p>Ahí confirmé el error: estaba usando una paleta vieja para representar la marca en un canal público, justo el mismo día en que se había aprobado la versión correcta.</p>
 
-## **Problema**
+  <h2>Acciones</h2>
+  <p>Para entender bien qué había pasado y evitar que se repitiera, armé un post-mortem siguiendo la estructura que venimos trabajando en el curso (basada en la cultura de post-mortems de Google SRE), enfocado en encontrar la causa real del problema y no en buscar a quién "culpar".</p>
 
-Para armar las piezas, abrí Illustrator y tomé los colores desde un archivo de biblioteca de swatches que tenía guardado en el escritorio de mi computadora. El problema es que **ese archivo correspondía a la v1 de la paleta**, una versión definida casi tres semanas antes, y no a la v3 que se había aprobado esa misma mañana.
+  <h3>Resumen del incidente</h3>
+  <p>El 16 de junio se publicaron 6 piezas de Instagram para Human Touch utilizando la versión v1 (obsoleta) de la paleta de colores de marca, en lugar de la versión v3 que había sido aprobada esa misma mañana.</p>
 
-No lo noté en el momento. Exporté las seis piezas, las programé en el calendario de contenido y se publicaron en el feed de Instagram a las 15:30, todas con la paleta de colores incorrecta.
+  <h3>Causa raíz</h3>
+  <p>El problema de fondo no fue un simple "descuido": <strong>no existía una única fuente de verdad para la paleta de marca</strong>. Coexistían tres archivos de Illustrator con bibliotecas de colores guardados en ubicaciones distintas (el escritorio, una carpeta de Drive compartida con la clienta, y una carpeta de respaldo), sin ningún tipo de nomenclatura que indicara cuál era la versión vigente. Cualquiera de esos archivos podía "parecer" el correcto.</p>
 
-A las 16:50, Romina me escribió por WhatsApp:
+  <h3>Línea de tiempo</h3>
+  <table>
+    <tr><th>Hora</th><th>Evento</th></tr>
+    <tr><td>10:15</td><td>Se aprueba con Romina la paleta final v3.</td></tr>
+    <tr><td>11:00</td><td>Se abre Illustrator y se usa por error la biblioteca de colores v1 para producir las piezas.</td></tr>
+    <tr><td>11:40</td><td>Se exportan las 6 piezas y se programan para publicar esa tarde.</td></tr>
+    <tr><td>15:30</td><td>Las piezas se publican en el feed de Instagram.</td></tr>
+    <tr><td>16:50</td><td>Romina avisa por WhatsApp que los colores no coinciden con lo aprobado.</td></tr>
+    <tr><td>16:55</td><td>Se confirma que se usó el archivo de la paleta v1, no la v3.</td></tr>
+    <tr><td>17:10</td><td>Se identifica la causa raíz: ausencia de un archivo único de referencia para la paleta.</td></tr>
+    <tr><td>17:20</td><td>Se corrigen las 6 piezas con la paleta v3 correcta y se vuelven a exportar.</td></tr>
+    <tr><td>17:45</td><td>Se reemplazan las publicaciones en Instagram y se le informa a Romina lo sucedido junto con la corrección ya realizada.</td></tr>
+    <tr><td>18:00</td><td>Se crea la carpeta única "Human Touch — Brand Assets", con un solo archivo maestro de paleta (<code>paleta_v3_FINAL.ai</code>), y se archivan las versiones anteriores sueltas.</td></tr>
+  </table>
 
-"Hola, vi las piezas pero los colores no son los que aprobamos esta mañana, ¿qué pasó?"
+  <h3>Impacto</h3>
+  <p>Las 6 publicaciones estuvieron visibles con la identidad visual incorrecta durante aproximadamente <strong>2 horas y 15 minutos</strong> (de 15:30 a 17:45). El error fue detectado por la clienta antes que por mí, lo cual además del impacto visual generó una pequeña pérdida de confianza que tuve que reparar con una comunicación clara y rápida.</p>
 
-Ahí confirmé el error: estaba usando una paleta vieja para representar la marca en un canal público, justo el mismo día en que se había aprobado la versión correcta.
+  <h3>Acciones correctivas tomadas</h3>
+  <ul>
+    <li>Corrección y reexportación de las 6 piezas con la paleta v3 aprobada.</li>
+    <li>Reemplazo inmediato de las publicaciones ya existentes en el feed de Instagram.</li>
+    <li>Comunicación transparente a la clienta, explicando con honestidad qué había pasado.</li>
+    <li>Reorganización completa de los archivos de marca en una única carpeta de referencia.</li>
+  </ul>
 
-## **Acciones**
+  <h3>Evidencia y control de versiones</h3>
+  <p>Para evitar que este tipo de error vuelva a pasar, subí los archivos de la paleta a un repositorio público en GitHub: <strong><a href="https://github.com/benjaguerrr/human-touch-brand-assets-">human-touch-brand-assets-</a></strong>.</p>
+  <p>Ahí se puede ver:</p>
+  <ul>
+    <li><code>paleta_v1.jpeg</code> — la versión vieja, conservada solo como referencia histórica.</li>
+    <li><code>paleta_v3_FINAL.jpeg</code> — la versión vigente y única fuente de verdad para cualquier pieza futura de la marca.</li>
+    <li>El commit de la corrección, con el mensaje: <code>Reemplazo biblioteca de colores por versión v3 aprobada — corrige error de publicación del 16/06</code>.</li>
+    <li>Un <em>issue</em> abierto documentando el incidente, a modo de registro del post-mortem dentro del propio repositorio.</li>
+  </ul>
+  <p>A partir de este incidente, cualquier archivo de marca de Human Touch se sube y se versiona ahí, en lugar de vivir suelto en distintas carpetas locales.</p>
 
-Para entender bien qué había pasado y evitar que se repitiera, armé un post-mortem siguiendo la estructura que venimos trabajando en el curso (basada en la cultura de post-mortems de Google SRE), enfocado en encontrar la causa real del problema y no en buscar a quién "culpar".
+  <h2>Aprendizajes</h2>
+  <ol>
+    <li><strong>Una marca necesita una única fuente de verdad.</strong> No importa cuán prolijo creas que sos organizando carpetas: si hay más de una versión "candidata" a ser la oficial, en algún momento se va a usar la equivocada.</li>
+    <li><strong>El control de versiones no es solo para programadores.</strong> Aplicar la misma lógica que usan los equipos de desarrollo (un archivo versionado, con historial y mensajes claros de qué cambió) funciona igual de bien para archivos de diseño.</li>
+    <li><strong>El MTTR también aplica al diseño.</strong> Desde que se detectó el error (16:50) hasta que la corrección estuvo publicada (17:45), pasaron 55 minutos. Tener el problema bien diagnosticado (la causa raíz, no solo el síntoma) fue lo que permitió resolverlo rápido y no repetir el mismo error la semana siguiente.</li>
+    <li><strong>Documentar el incidente, aunque sea un proyecto chico o un cliente único, vale la pena.</strong> Lo que antes vivía solo en mi cabeza como "un mal día", ahora es un proceso escrito que puedo reusar si me pasa algo parecido en otro proyecto.</li>
+  </ol>
 
-### **Resumen del incidente**
+  <h2>Reflexión: feedback radicalmente sincero</h2>
+  <p>El momento más importante de todo este proceso no fue técnico, fue el de las 16:55: cómo le iba a responder a Romina.</p>
+  <p>Tenía dos malas opciones. Podía pedir disculpas rápido y vagas, sin explicar bien qué había pasado, para "cerrar el tema" lo antes posible — eso hubiera sido cuidar la relación, pero sin ninguna honestidad real sobre la causa (lo que el modelo de <em>Radical Candor</em> llama <strong>empatía ruinosa</strong>). O podía explicarle el error de forma técnica y fría, sin ningún gesto de disculpa genuina, simplemente informando el hecho.</p>
+  <p>En cambio, intenté combinar las dos cosas: le conté con total honestidad que había usado una versión vieja de la paleta por un problema de organización de mis propios archivos —sin inventar una excusa ni minimizar lo que pasó— y al mismo tiempo le mostré que me importaba la situación, pidiendo disculpas y confirmando que ya estaba resuelto.</p>
+  <p>Esa combinación de <strong>cuidado personal</strong> (la relación, el respeto por su tiempo y su marca) y <strong>desafío directo</strong> (no esconder ni suavizar de más la causa real del error) es lo que el curso llama <em>Radical Candor</em>, y creo que fue justamente lo que evitó que un error de 6 publicaciones se convirtiera en un problema de confianza más grande con la clienta.</p>
+  <p>A partir de ahora, ese mismo principio lo aplico también hacia mí mismo: en vez de simplemente decir "fui descuidado", trato de ser específico sobre qué proceso falló (la falta de una fuente única de archivos) y accionable sobre qué cambiar (la carpeta de Brand Assets), en lugar de quedarme solo en la autocrítica vaga.</p>
 
-El 16 de junio se publicaron 6 piezas de Instagram para Human Touch utilizando la versión v1 (obsoleta) de la paleta de colores de marca, en lugar de la versión v3 que había sido aprobada esa misma mañana.
+  <hr>
+  <footer>Este post fue escrito como entrega final del módulo "Mentalidad de Crecimiento y Comunicación en Entornos Digitales".</footer>
+</main>
 
-### **Causa raíz**
-
-El problema era que **no existía una única fuente de verdad para la paleta de marca**. Existían tres archivos de Illustrator con bibliotecas de colores guardados en ubicaciones distintas (el escritorio, una carpeta de Drive compartida con la clienta, y una carpeta de respaldo), sin ningún tipo de nomenclatura que indicara cuál era la versión vigente. Cualquiera de esos archivos podía "parecer" el correcto.
-
-### **Línea de tiempo**
-
-| Hora | Evento |
-| ----- | ----- |
-| 10:15 | Se aprueba con Romina la paleta final v3. |
-| 11:00 | Se abre Illustrator y se usa por error la biblioteca de colores v1 para producir las piezas. |
-| 11:40 | Se exportan las 6 piezas y se programan para publicar esa tarde. |
-| 15:30 | Las piezas se publican en el feed de Instagram. |
-| 16:50 | Romina avisa por WhatsApp que los colores no coinciden con lo aprobado. |
-| 16:55 | Se confirma que se usó el archivo de la paleta v1, no la v3. |
-| 17:10 | Se identifica la causa raíz: ausencia de un archivo único de referencia para la paleta. |
-| 17:20 | Se corrigen las 6 piezas con la paleta v3 correcta y se vuelven a exportar. |
-| 17:45 | Se reemplazan las publicaciones en Instagram y se le informa a Romina lo sucedido junto con la corrección ya realizada. |
-| 18:00 | Se crea la carpeta única "Human Touch — Brand Assets", con un solo archivo maestro de paleta (`paleta_v3_FINAL.ai`), y se archivan las versiones anteriores sueltas. |
-
-### **Impacto**
-
-Las 6 publicaciones estuvieron visibles con la identidad visual incorrecta durante aproximadamente **2 horas y 15 minutos** (de 15:30 a 17:45). El error fue detectado por la clienta antes que por mí, lo cual además del impacto visual generó una pequeña pérdida de confianza que tuve que reparar con una comunicación clara y rápida.
-
-### **Acciones correctivas tomadas**
-
-* Corrección y reexportación de las 6 piezas con la paleta v3 aprobada.  
-* Reemplazo inmediato de las publicaciones ya existentes en el feed de Instagram.  
-* Comunicación transparente a la clienta, explicando con honestidad qué había pasado.  
-* Reorganización completa de los archivos de marca en una única carpeta de referencia.
-
-### **Evidencia y control de versiones**
-
-Para evitar que este tipo de error vuelva a pasar, subí los archivos de la paleta a un repositorio público en GitHub: [**github.com/benjaguerrr/human-touch-brand-assets**](https://github.com/benjaguerrr/human-touch-brand-assets) 
-
-Ahí se puede ver:
-
-* `paleta_v1.jpeg` — la versión vieja, conservada solo como referencia histórica.  
-* `paleta_v3_FINAL.jpeg` — la versión vigente y única fuente de verdad para cualquier pieza futura de la marca.  
-* El commit de la corrección, con el mensaje: `Reemplazo biblioteca de colores por versión v3 aprobada — corrige error de publicación del 16/06`.  
-* Un *issue* abierto documentando el incidente, a modo de registro del post-mortem dentro del propio repositorio.
-
-A partir de este incidente, cualquier archivo de marca de Human Touch se sube y se versiona ahí, en lugar de vivir suelto en distintas carpetas locales.
-
-## **Recursos**
-
-• Blog publicado: [https://benjaguerrr.github.io](https://benjaguerrr.github.io/human-touch-brand-assets/) 
-
-• Repositorio: [**github.com/benjaguerrr/human-touch-brand-assets**](https://github.com/benjaguerrr/human-touch-brand-assets) 
-
-• Commit de la corrección: [github.com/benjaguerrr/human-touch-brand-assets/commit/055b1ae93155125828cad2ad1b443ebdb04c8335](https://github.com/benjaguerrr/human-touch-brand-assets/commit/055b1ae93155125828cad2ad1b443ebdb04c8335) 
-
-• Issue del incidente: [https://github.com/benjaguerrr/human-touch-brand-assets/issues/1](https://github.com/benjaguerrr/human-touch-brand-assets/issues/1) 
-
-## **Aprendizajes**
-
-1. **Una marca necesita una única fuente de verdad.** No importa cuán prolijo creas que sos organizando carpetas: si hay más de una versión "candidata" a ser la oficial, en algún momento se va a usar la equivocada.  
-2. **El control de versiones no es solo para programadores.** Aplicar la misma lógica que usan los equipos de desarrollo (un archivo versionado, con historial y mensajes claros de qué cambió) funciona igual de bien para archivos de diseño.  
-3. **El MTTR también aplica al diseño.** Desde que se detectó el error (16:50) hasta que la corrección estuvo publicada (17:45), pasaron 55 minutos. Tener el problema bien diagnosticado (la causa raíz, no solo el síntoma) fue lo que permitió resolverlo rápido y no repetir el mismo error la semana siguiente.  
-4. **Documentar el incidente, aunque sea un proyecto chico o un cliente único, vale la pena.** Lo que antes vivía solo en mi cabeza como "un mal día", ahora es un proceso escrito que puedo reusar si me pasa algo parecido en otro proyecto.
-
-## **Reflexión: feedback radicalmente sincero**
-
-El momento más importante de todo este proceso no fue técnico, fue el de las 16:55: cómo le iba a responder a Romina.
-
-Tenía dos malas opciones. Podía pedir disculpas rápido y vagas, sin explicar bien qué había pasado, para "cerrar el tema" lo antes posible — eso hubiera sido cuidar la relación, pero sin ninguna honestidad real sobre la causa (lo que el modelo de *Radical Candor* llama **empatía ruinosa**). O podía explicarle el error de forma técnica y fría, sin ningún gesto de disculpa genuina, simplemente informando el hecho.
-
-En cambio, intenté combinar las dos cosas: le conté con total honestidad que había usado una versión vieja de la paleta por un problema de organización de mis propios archivos —sin inventar una excusa ni minimizar lo que pasó— y al mismo tiempo le mostré que me importaba la situación, pidiendo disculpas y confirmando que ya estaba resuelto.
-
-Esa combinación de **cuidado personal** (la relación, el respeto por su tiempo y su marca) y **desafío directo** (no esconder ni suavizar de más la causa real del error) es lo que el curso llama *Radical Candor*, y creo que fue justamente lo que evitó que un error de 6 publicaciones se convirtiera en un problema de confianza más grande con la clienta.
-
-A partir de ahora, ese mismo principio lo aplico también hacia mí mismo: en vez de simplemente decir "fui descuidado", trato de ser específico sobre qué proceso falló (la falta de una fuente única de archivos) y accionable sobre qué cambiar (la carpeta de Brand Assets), en lugar de quedarme solo en la autocrítica vaga.
-
-1. Captura del repositorio de GitHub.  
-2. Captura del blog publicado.  
-3. Captura del commit.  
-4. Captura del Issue (si hiciste uno).  
-5. Captura de la URL pública funcionando.  
-6. Checklist final.
-
-</p>
+</body>
+</html>
